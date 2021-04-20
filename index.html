@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Random Number Generator</title>
+  </head>
+  <body>
+    <button class="printer">Print</button>
+    <p class="output"></p>
+    <script>
+      function program() {
+        const printerButtonElement = document.querySelectorAll(".printer")[0];
+        const outputParagraphElement = document.querySelectorAll(".output")[0];
+        if (localStorage.getItem("master") === null) {
+          const masterTemplate = [];
+          localStorage.setItem("master", JSON.stringify(masterTemplate));
+        }
+        setInterval(function () {
+          const randomNumber = Math.floor(Math.random() * 10);
+          const tempDate = new Date();
+          const currentTime = tempDate.getTime();
+          const retrievedMaster = localStorage.getItem("master");
+          const retrievedMasterParsed = JSON.parse(retrievedMaster);
+          retrievedMasterParsed.push({
+            number: randomNumber,
+            time: currentTime,
+          });
+          localStorage.setItem("master", JSON.stringify(retrievedMasterParsed));
+        }, 1000);
+        printerButtonElement.addEventListener("click", function () {
+          outputParagraphElement.innerHTML = "[";
+          const retrievedMaster = localStorage.getItem("master");
+          const retrievedMasterParsed = JSON.parse(retrievedMaster);
+          retrievedMasterParsed.forEach(function (item) {
+            outputParagraphElement.innerHTML +=
+              "'" + item.number + "-" + item.time + "',";
+          });
+          outputParagraphElement.innerHTML += "]";
+        });
+      }
+      program();
+    </script>
+  </body>
+</html>
